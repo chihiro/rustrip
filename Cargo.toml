@@ -1,0 +1,11 @@
+[package]
+name = "rustrip"
+version = "0.1.0"
+authors = ["Rose <lain@lain.org.uk>"]
+
+[[bin]]
+name = "rustrip"
+doc = false
+
+[dependencies]
+pwhash = "0.1.1"
