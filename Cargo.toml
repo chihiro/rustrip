@@ -10,3 +10,4 @@ doc = false
 [dependencies]
 pwhash = "0.1.1"
 regex = "0.2.1"
+rand = "0.3.15"
