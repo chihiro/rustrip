@@ -10,15 +10,8 @@ pub fn rust_crypt(key: &str, salt: &str) -> Option<String> {
   let c_salt = CString::new(salt).unwrap();
   unsafe {
     let data_ptr = crypt(c_key.as_ptr(), c_salt.as_ptr());
-
-    if data_ptr.is_null() {
-      return None
-    }
-
-    else {
-      let buffer = CStr::from_ptr(data_ptr).to_str();
-      buffer.ok().and_then(|hash| Some(hash.into()))
-    }
+    let buffer = CStr::from_ptr(data_ptr).to_str();
+    buffer.ok().and_then(|hash| Some(hash.into()))
   }
 }
 
