@@ -1,7 +1,26 @@
-extern crate pwhash;
+use std::ffi::{CString, CStr};
+use std::os::raw::c_char;
 
-// hash_with(salt: &str, pass: &str) -> Result<String>
-use pwhash::unix_crypt::hash_with as crypt;
+extern {
+  fn crypt(key: *const c_char, salt: *const c_char) -> *const c_char;
+}
+
+pub fn rust_crypt(key: &str, salt: &str) -> Option<String> {
+  let c_key = CString::new(key).unwrap();
+  let c_salt = CString::new(salt).unwrap();
+  unsafe {
+    let data_ptr = crypt(c_key.as_ptr(), c_salt.as_ptr());
+
+    if data_ptr.is_null() {
+      return None
+    }
+
+    else {
+      let buffer = CStr::from_ptr(data_ptr).to_str();
+      buffer.ok().and_then(|hash| Some(hash.into()))
+    }
+  }
+}
 
 /**
   **This function doesn't convert to Shift-JIS.**
@@ -44,7 +63,7 @@ pub fn saltify(source: &str) -> String {
 /// Produces a tripcode compatible with most popular imageboards.
 pub fn encode(source: &str) -> Option<String> {
   let salt = saltify(source);
-  crypt(&salt, source).ok().and_then(|trip| {
+  rust_crypt(source, &salt).and_then(|trip| {
     Some( (&trip[3..]).into() )
   })
 }
