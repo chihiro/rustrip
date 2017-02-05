@@ -2,6 +2,7 @@
 name = "rustrip"
 version = "0.1.0"
 authors = ["Rose <lain@lain.org.uk>"]
+build = "build.rs"
 
 [[bin]]
 name = "rustrip"
